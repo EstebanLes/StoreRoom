@@ -1,5 +1,6 @@
 package com.example.storeroom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -31,16 +32,37 @@ class StoreAdapter(
     }
 
     override fun getItemCount(): Int = stores.size
-    fun add(storeEntityEntity: StoreEntity) {
-        stores.add(storeEntityEntity)
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setStore(stores: MutableList<StoreEntity>) {
+        this.stores = stores
         notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun add(storeEntity : StoreEntity) {
+        stores.add(storeEntity)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun update(storeEntity: StoreEntity) {
+        val index = stores.indexOf(storeEntity)
+        if (index != -1){
+            stores[index] = storeEntity
+            notifyItemChanged(index)
+        }
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ItemStoreBinding.bind(view)
 
-        fun setlistener (storeEntityEntity: StoreEntity){
-            binding.root.setOnClickListener { listener.onClick(storeEntityEntity) }
+        fun setlistener (storeEntity : StoreEntity){
+            binding.root.setOnClickListener { listener.onClick(storeEntity) }
+
+            binding.chbFavorite.setOnClickListener {
+                listener.onFavoriteStore(storeEntity)
+            }
         }
     }
 }
